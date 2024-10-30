@@ -1,12 +1,17 @@
 #!/usr/bin/python3
+
+'''A script for parsing HTTP request logs.
+'''
 import sys
 import re
 import signal
 
 # Global variables to store file size and status code counts
 file_size = 0
-status_counts = {200: 0, 301: 0, 400: 0,
-                 401: 0, 403: 0, 404: 0, 405: 0, 500: 0}
+status_counts = {
+    200: 0, 301: 0, 400: 0,
+    401: 0, 403: 0, 404: 0, 405: 0, 500: 0
+}
 status_codes = {200, 301, 400, 401, 403, 404, 405, 500}
 
 
@@ -21,10 +26,14 @@ signal.signal(signal.SIGINT, signal_handle)
 
 
 def check_format(line):
-    """Check if the line matches the expected log format and updates metrics."""
+    """Check if the line matches the expected log format"""
     global file_size
     log_pattern = re.compile(
-        r'(?P<ip>\d+\.\d+\.\d+\.\d+) - \[(?P<date>.*?)\] "GET /projects/260 HTTP/1\.1" (?P<status>\d{3}) (?P<size>\d+)$'
+        r"(?P<ip>\d+\.\d+\.\d+\.\d+)\s-\s"
+        r"\[(?P<date>.*?)\]\s"
+        r'"GET /projects/260 HTTP/1\.1"\s'
+        r"(?P<status>\d{3})\s"
+        r"(?P<size>\d+)$"
     )
     match = log_pattern.match(line)
     if match:
